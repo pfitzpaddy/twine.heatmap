@@ -1,4 +1,4 @@
-##Python Heatmap
+##twine.heatmap
 
 Python server side heatmap library demo
 
@@ -21,4 +21,8 @@ Python server side heatmap library demo
 	
 - This script takes a series of points from a JSON file.
 
-#### Test heatmaps py install
+#### Application
+
+ - From Apache web server navigate to 
+	 
+		http://<your.host>>/twine-heatmap/index.html 
