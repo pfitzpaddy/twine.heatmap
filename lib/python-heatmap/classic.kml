@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Folder>
+    <GroundOverlay>
+      <Icon>
+        <href>classic.png</href>
+      </Icon>
+      <LatLonBox>
+        <north>6.1166666666699996</north>
+        <south>-7.0000000000000000</south>
+        <east>95.0833333333000041</east>
+        <west>126.8333333329999988</west>
+        <rotation>0</rotation>
+      </LatLonBox>
+    </GroundOverlay>
+  </Folder>
+</kml>
