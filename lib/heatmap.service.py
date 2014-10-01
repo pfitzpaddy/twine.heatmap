@@ -16,9 +16,11 @@ if __name__ == "__main__":
     scheme='fire';
     epoch=int(time.time());
     # pixel size of map
-    size=[data[0][0],data[0][1]]; #size=[1653,600];
+    #size=[1653,600];
+    size=[data[0][0],data[0][1]]; 
     # geographic extents
-    bounds=[[data[1][0][0],data[1][0][1]],[data[1][1][0],data[1][1][1]]]; #bounds=[[-7.0354756524330115,90.593261718751],[6.118707747190857,126.91406249999999]];
+    #bounds=[[-7.0354756524330115,90.593261718751],[6.118707747190857,126.91406249999999]];
+    bounds=[[data[1][0][0],data[1][0][1]],[data[1][1][0],data[1][1][1]]]; 
     
     # Currently reading in TopoJson for testing purposes
     # Can use PostGIS bounding box query to fetch points
@@ -36,8 +38,10 @@ if __name__ == "__main__":
 
     hm = heatmap.Heatmap()
     # classic
-    #hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
-    #hm.saveKML('../imgs/'+str(epoch)+'.png')
+    # hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
+    # hm.saveKML('../imgs/'+str(epoch)+'.kml')
     img=hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
     img.save('../imgs/'+str(epoch)+'.png')
-    print '{"success": "true", "filename": "'+str(epoch)+'", "size": "'+str(size)+'", "bounds": "'+str(bounds)+'" }'
+    # scaled bounding coords
+    ((east, south), (west, north)) = hm._ranges(hm.points)
+    print '{"success": "true", "filename": "'+str(epoch)+'", "size": "'+str(size)+'", "bounds": "[['+str(south)+','+str(east)+'],['+str(north)+','+str(west)+']]" }'

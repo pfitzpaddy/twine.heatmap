@@ -40,26 +40,9 @@ $( document ).ready(function() {
         getHeatmap();
     });
 
-    // $.ajax({
-    //     url: "lib/ww2_thor_pt.min.json",
-    //     success: function( json ) {
-    //         L.geoJson(json).addTo(map);
-    //     }
-    // });
-
     //
     getHeatmap();
 
-
-    function toXY(lat, lng, map) {
-        var projected = map.options.crs.projection.project(L.latLng(lat, lng))
-        return projected.multiplyBy(6378137);
-    }
-
-    function toLatLng(x, y, map) {
-        var projected = L.point(y, x).divideBy(6378137);
-        return map.options.crs.projection.unproject(projected);
-    }
     
     function getHeatmap() {
 
@@ -82,10 +65,11 @@ $( document ).ready(function() {
                 // Remove layer if exits
                 $(".leaflet-image-layer").remove();
 
-                var imageUrl = 'imgs/' + response.filename + '.png';
+                // parse adjusted bounds
+                bounds = JSON.parse(response.bounds);
 
-                heatmap = L.imageOverlay(imageUrl, L.latLngBounds(imageBounds));
-                map.addLayer(heatmap);
+                // Add image overlay
+                L.imageOverlay('imgs/' + response.filename + '.png', [[bounds[0][0],bounds[0][1]],[bounds[1][0],bounds[1][1]]]).addTo(map);
             }
         });
     }
