@@ -36,6 +36,8 @@ if __name__ == "__main__":
 
     hm = heatmap.Heatmap()
     # classic
+    #hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
+    #hm.saveKML("../classic.kml")
     img=hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
     img.save('../imgs/'+str(epoch)+'.png')
     print '{"success": "true", "filename": "'+str(epoch)+'", "size": "'+str(size)+'", "bounds": "'+str(bounds)+'" }'

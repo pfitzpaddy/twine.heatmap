@@ -67,11 +67,6 @@ $( document ).ready(function() {
         size = [map.getPixelBounds().max.x - map.getPixelBounds().min.x, map.getPixelBounds().max.y - map.getPixelBounds().min.y];
         imageBounds = [[map.getBounds()._southWest.lat,map.getBounds()._southWest.lng],[map.getBounds()._northEast.lat,map.getBounds()._northEast.lng]];
 
-        // Remove layer if exits
-        if ( heatmap ){
-            map.removeLayer( heatmap );
-        }
-
         // Send request to return heatmap
         $.ajax({
             url: 'lib/heatmap.service.php',
@@ -83,9 +78,13 @@ $( document ).ready(function() {
             },
             // work with the response
             success: function( response ) {
-                var imageUrl = 'imgs/' + response.filename + '.png';     
 
-                heatmap = L.imageOverlay(imageUrl, imageBounds);
+                // Remove layer if exits
+                $(".leaflet-image-layer").remove();
+
+                var imageUrl = 'imgs/' + response.filename + '.png';
+
+                heatmap = L.imageOverlay(imageUrl, L.latLngBounds(imageBounds));
                 map.addLayer(heatmap);
             }
         });
