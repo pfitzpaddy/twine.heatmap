@@ -12,7 +12,7 @@ except:
 
 if __name__ == "__main__":
     pts=[];
-    dotsize=56;
+    dotsize=42;
     scheme='fire';
     epoch=int(time.time());
     # pixel size of map
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     hm = heatmap.Heatmap()
     # classic
     #hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
-    #hm.saveKML("../classic.kml")
+    #hm.saveKML('../imgs/'+str(epoch)+'.png')
     img=hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
     img.save('../imgs/'+str(epoch)+'.png')
     print '{"success": "true", "filename": "'+str(epoch)+'", "size": "'+str(size)+'", "bounds": "'+str(bounds)+'" }'
