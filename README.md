@@ -25,4 +25,10 @@ Python server side heatmap library demo
 
  - From Apache web server navigate to 
 	 
-		http://<your.host>>/twine-heatmap/index.html 
+		http://<your.host>>/twine-heatmap/index.html
+
+- If no heatmap is visible, check permissions (enable shell_exec and r/w folder)
+
+#### Known issues
+
+ - since the generated PNG needs to be aligned to the map projection, at small scales (when the map is zoomed in) the map may not display correctly. 
