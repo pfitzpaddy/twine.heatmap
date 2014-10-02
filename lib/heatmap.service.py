@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, json, time, heatmap
+import sys, shutil, json, time, heatmap
 sys.path.insert(0, 'path_to_my_modules')
 
 # Load the data that PHP sent us
@@ -12,15 +12,13 @@ except:
 
 if __name__ == "__main__":
     pts=[];
-    dotsize=42;
-    scheme='fire';
     epoch=int(time.time());
-    # pixel size of map
-    #size=[1653,600];
-    size=[data[0][0],data[0][1]]; 
-    # geographic extents
-    #bounds=[[-7.0354756524330115,90.593261718751],[6.118707747190857,126.91406249999999]];
-    bounds=[[data[1][0][0],data[1][0][1]],[data[1][1][0],data[1][1][1]]]; 
+    # py heatmap
+    dotsize=int(data[0][0]);
+    opacity=int(data[0][1]); 
+    scheme='fire'; # str(data[0][2]); #one of ["classic", "fire", "omg", "pbj", "pgaitch"]
+    size=[data[1][0],data[1][1]]; # pixel size of map
+    bounds=[[data[2][0][0],data[2][0][1]],[data[2][1][0],data[2][1][1]]]; # geographic extents
     
     # Currently reading in TopoJson for testing purposes
     # Can use PostGIS bounding box query to fetch points
@@ -40,8 +38,8 @@ if __name__ == "__main__":
     # classic
     # hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
     # hm.saveKML('../imgs/'+str(epoch)+'.kml')
-    img=hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
+    img=hm.heatmap(pts,dotsize=dotsize,opacity=opacity,size=(size[0], size[1]),scheme=scheme)
     img.save('../imgs/'+str(epoch)+'.png')
     # scaled bounding coords
     ((east, south), (west, north)) = hm._ranges(hm.points)
-    print '{"success": "true", "filename": "'+str(epoch)+'", "size": "'+str(size)+'", "bounds": "[['+str(south)+','+str(east)+'],['+str(north)+','+str(west)+']]" }'
+    print '{"success": "true", "filename": "'+str(epoch)+'", "dotSize": "'+str(dotsize)+'", "opacity": "'+str(opacity)+'", "scheme": "'+str(scheme)+'", "imgSize": "'+str(size)+'", "bounds": "[['+str(south)+','+str(east)+'],['+str(north)+','+str(west)+']]" }'

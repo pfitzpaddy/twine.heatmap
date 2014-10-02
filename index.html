@@ -27,7 +27,9 @@ $( document ).ready(function() {
     var map = L.map('map', {
         center: [-0.48, 110],
         zoom: 6,
-        crs: L.CRS.EPSG3857
+        minZoom: 3,
+        crs: L.CRS.EPSG4326,
+        worldCopyJump: true,
     });
 
     var tiles = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -46,8 +48,32 @@ $( document ).ready(function() {
     
     function getHeatmap() {
 
+        // zoom/dotSize
+        z = map.getZoom();
+        dotSize = 78;
+
+        // Determine the heatmap dotsize
+        if(z<10){
+            dotSize = 68;
+        }
+        if(z<9){
+            dotSize = 56;
+        }
+        if(z<8){
+            dotSize = 48;
+        }
+        if(z<7){
+            dotSize = 42;
+        }
+        if(z<6){
+            dotSize = 28;
+        }
+        if(z<4){
+            dotSize = 24;
+        }
+
         // Get image size and bounds
-        size = [map.getPixelBounds().max.x - map.getPixelBounds().min.x, map.getPixelBounds().max.y - map.getPixelBounds().min.y];
+        imgSize = [map.getPixelBounds().max.x - map.getPixelBounds().min.x, map.getPixelBounds().max.y - map.getPixelBounds().min.y];
         imageBounds = [[map.getBounds()._southWest.lat,map.getBounds()._southWest.lng],[map.getBounds()._northEast.lat,map.getBounds()._northEast.lng]];
 
         // Send request to return heatmap
@@ -56,7 +82,10 @@ $( document ).ready(function() {
             type: 'post',
             dataType: "json",
             data: {
-                size: size,
+                dotSize: dotSize,
+                opacity: 160,
+                //scheme: 'classic', // one of ["classic", "fire", "omg", "pbj", "pgaitch"]
+                imgSize: imgSize,
                 bounds: imageBounds
             },
             // work with the response

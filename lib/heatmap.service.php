@@ -1,11 +1,29 @@
 <?php
 
-// Params
-$size = $_REQUEST['size'];
+// get params
+$dotSize = $_REQUEST['dotSize'];
+$opacity = $_REQUEST['opacity'];
+// $scheme = $_REQUEST['scheme'];
+$imgSize = $_REQUEST['imgSize'];
 $bounds = $_REQUEST['bounds'];
-$data = [$size, $bounds];
+
+// prepare json
+//$data = [[$dotSize, $opacity, $scheme], $imgSize, $bounds];
+$data = [[$dotSize, $opacity], $imgSize, $bounds];
 
 #echo escapeshellarg(json_encode($data));
+
+// Clear images older than 1 min
+$files = glob('../imgs/*');
+foreach($files as $file)
+{	
+	$filemtime=filemtime($file);
+  	if (is_file($file) && (time()-$filemtime>= 60))
+  	{
+  		// delete file
+		unlink($file);
+	}
+}
 
 // Exec python script to process heatmap
 $result = shell_exec("python heatmap.service.py " . escapeshellarg(json_encode($data)));
