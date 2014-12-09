@@ -14,8 +14,9 @@ if __name__ == "__main__":
     pts=[];
     epoch=int(time.time());
     # py heatmap
-    dotsize=int(data[0][0]);
-    opacity=int(data[0][1]); 
+    png=data[0][0];
+    dotsize=int(data[0][1]);
+    opacity=int(data[0][2]); 
     scheme='fire'; # str(data[0][2]); #one of ["classic", "fire", "omg", "pbj", "pgaitch"]
     size=[data[1][0],data[1][1]]; # pixel size of map
     bounds=[[data[2][0][0],data[2][0][1]],[data[2][1][0],data[2][1][1]]]; # geographic extents
@@ -24,22 +25,33 @@ if __name__ == "__main__":
     # Can use PostGIS bounding box query to fetch points
         #http://postgis.refractions.net/documentation/manual-2.0/ST_Contains.html
 
+    
     # Read TopoJson and determine bounds
     with open('ww2_thor_pt.min.json') as f:
         data = json.load(f)
 
     for feature in data['features']:
         if bounds[0][0] <= feature['geometry']['coordinates'][1] <= bounds[1][0] and bounds[0][1] <= feature['geometry']['coordinates'][0] <= bounds[1][1]:
-            pts.append(feature['geometry']['coordinates'])
+            if png:
+                # Python heatmap lib/GeoJson uses lon,lat
+                pts.append(feature['geometry']['coordinates'])
+            else:
+                # Leaflet uses lat, lon
+                pts.append([feature['geometry']['coordinates'][1], feature['geometry']['coordinates'][0]])
 
     #print "Processing %d points..." % len(pts)
 
-    hm = heatmap.Heatmap()
-    # classic
-    # hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
-    # hm.saveKML('../imgs/'+str(epoch)+'.kml')
-    img=hm.heatmap(pts,dotsize=dotsize,opacity=opacity,size=(size[0], size[1]),scheme=scheme)
-    img.save('../imgs/'+str(epoch)+'.png')
-    # scaled bounding coords
-    ((east, south), (west, north)) = hm._ranges(hm.points)
-    print '{"success": "true", "filename": "'+str(epoch)+'", "dotSize": "'+str(dotsize)+'", "opacity": "'+str(opacity)+'", "scheme": "'+str(scheme)+'", "imgSize": "'+str(size)+'", "bounds": "[['+str(south)+','+str(east)+'],['+str(north)+','+str(west)+']]" }'
+    if png:
+        # Render Python PNG heatmap
+        hm = heatmap.Heatmap()
+        # classic
+        # hm.heatmap(pts,dotsize=dotsize,size=(size[0], size[1]),scheme=scheme)
+        # hm.saveKML('../imgs/'+str(epoch)+'.kml')
+        img=hm.heatmap(pts,dotsize=dotsize,opacity=opacity,size=(size[0], size[1]),scheme=scheme)
+        img.save('../imgs/'+str(epoch)+'.png')
+        # scaled bounding coords
+        ((east, south), (west, north)) = hm._ranges(hm.points)
+        print '{"success": true, "filename": "'+str(epoch)+'", "dotSize": "'+str(dotsize)+'", "opacity": "'+str(opacity)+'", "scheme": "'+str(scheme)+'", "imgSize": "'+str(size)+'", "bounds": "[['+str(south)+','+str(east)+'],['+str(north)+','+str(west)+']]" }'
+    else:
+        # Return array of pts to render on client
+        print '{"success": true, "filename": false, "data": ' + json.dumps(pts) + '}'

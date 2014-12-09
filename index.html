@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="lib/leaflet-heat.js"></script>
     <style>
         #map { width: 100%; height: 600px; }
         body { font: 16px/1.4 "Helvetica Neue", Arial, sans-serif; }
@@ -22,7 +23,11 @@ $( document ).ready(function() {
 
     var pixelBounds,
         bbox,
-        heatmap;
+        heatmap,
+        z,
+        dotSize,
+        pngHeatmap,
+        heatmapLayer;
 
     var map = L.map('map', {
         center: [-0.48, 110],
@@ -48,9 +53,10 @@ $( document ).ready(function() {
     
     function getHeatmap() {
 
-        // zoom/dotSize
+        // zoom/dotSize/pngHeatMap
         z = map.getZoom();
         dotSize = 78;
+        pngHeatmap = false;
 
         // Determine the heatmap dotsize
         if(z<10){
@@ -64,12 +70,15 @@ $( document ).ready(function() {
         }
         if(z<7){
             dotSize = 42;
+            pngHeatmap = true;
         }
         if(z<6){
             dotSize = 28;
+            pngHeatmap = true;
         }
         if(z<4){
             dotSize = 24;
+            pngHeatmap = true;
         }
 
         // Get image size and bounds
@@ -82,8 +91,9 @@ $( document ).ready(function() {
             type: 'post',
             dataType: "json",
             data: {
+                png: pngHeatmap,
                 dotSize: dotSize,
-                opacity: 160,
+                opacity: 200,
                 //scheme: 'classic', // one of ["classic", "fire", "omg", "pbj", "pgaitch"]
                 imgSize: imgSize,
                 bounds: imageBounds
@@ -91,14 +101,32 @@ $( document ).ready(function() {
             // work with the response
             success: function( response ) {
 
-                // Remove layer if exits
+                // // Remove layer if exits
                 $(".leaflet-image-layer").remove();
+                $(".leaflet-heatmap-layer").remove();
 
-                // parse adjusted bounds
-                bounds = JSON.parse(response.bounds);
-
-                // Add image overlay
-                L.imageOverlay('imgs/' + response.filename + '.png', [[bounds[0][0],bounds[0][1]],[bounds[1][0],bounds[1][1]]]).addTo(map);
+                if (response.filename) {
+                    // parse adjusted bounds
+                    bounds = JSON.parse(response.bounds);
+                    // Add image overlay
+                    L.imageOverlay('imgs/' + response.filename + '.png', [[bounds[0][0],bounds[0][1]],[bounds[1][0],bounds[1][1]]]).addTo(map);
+                } else {
+                    // Add data as heatmap layer
+                    var options = {
+                        minOpacity: 0.5,
+                        radius: 18,
+                        blur: 15,
+                        max: 1.0,
+                        gradient: {
+                            0: "rgb(177, 177, 177)",
+                            0.45: "rgb(177, 177, 177)",
+                            0.60: 'red',
+                            0.65: 'yellow', 
+                            0.75: 'rgb(255, 255, 255)'
+                        }
+                    };         
+                    var heatmapLayer = L.heatLayer(response.data, options).addTo(map);
+                }
             }
         });
     }

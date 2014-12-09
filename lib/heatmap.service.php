@@ -1,6 +1,7 @@
 <?php
 
 // get params
+$png = $_REQUEST['png'];
 $dotSize = $_REQUEST['dotSize'];
 $opacity = $_REQUEST['opacity'];
 // $scheme = $_REQUEST['scheme'];
@@ -9,7 +10,7 @@ $bounds = $_REQUEST['bounds'];
 
 // prepare json
 //$data = [[$dotSize, $opacity, $scheme], $imgSize, $bounds];
-$data = [[$dotSize, $opacity], $imgSize, $bounds];
+$data = [[$png, $dotSize, $opacity], $imgSize, $bounds];
 
 #echo escapeshellarg(json_encode($data));
 
