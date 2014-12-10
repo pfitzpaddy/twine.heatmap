@@ -27,7 +27,7 @@ Python server side heatmap library demo
 	 
 		http://<your.host>>/twine-heatmap/index.html
 
-- If no heatmap is visible, check permissions (enable shell_exec and r/w folder)
+- If no heatmap is visible, check permissions (enable shell_exec and r/w "imgs" folder)
 
 #### Heatmap Service
 
@@ -64,7 +64,7 @@ Python server side heatmap library demo
 	![classic](http://jjguy.com/heatmap/fire.png) ![fire](http://jjguy.com/heatmap/classic.png) ![omg](http://jjguy.com/heatmap/omg.png) ![pbj](http://jjguy.com/heatmap/schemes/pbj.png) ![pgaitch](http://jjguy.com/heatmap/pgaitch.png)
 
 ## Demo (results)
-- At zoom levels less than 7 (where the world is at full extents as zoom level 0), the client transitions from displaying server side PNG generated heatmap to [leaflet.heat](https://github.com/Leaflet/Leaflet.heat) client generated heatmap.
+- At zoom levels greater than 7 (where the world is at full extents as zoom level 0), the client transitions from displaying server side PNG generated heatmap to [leaflet.heat](https://github.com/Leaflet/Leaflet.heat) client generated heatmap.
 
 #### Zoom scale 6, server side generated heatmap
 
